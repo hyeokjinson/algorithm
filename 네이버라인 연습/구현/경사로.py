@@ -33,7 +33,7 @@ def check(a):
             return False
     return True
 
-arr.isd
+
 if __name__=="__main__":
     N,L=map(int,input().split())
     arr=[list(map(int,input().split()))for _ in range(N)]
