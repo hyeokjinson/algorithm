@@ -1,3 +1,5 @@
+# N개의 원소를 포함하고 있는 수열이 오름차순으로 정렬 되어 있습니다 .이때 이 수열에서 x가 등장하는 횟수를 계산하세요
+# ex)[1,1,2,2,2,2,3,]일때 x=2라면 2의 원소가 4개이므로 4를 출력
 def first(array,target,start,end):
     if start>end:
         return None

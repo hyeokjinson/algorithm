@@ -1,3 +1,6 @@
+#고정점이란 수열의 원소 중에서 그값이 인덱스와 동일한 원소를 의미합니다.예를들어 수열 a={-15,-4,2,8,13}이 있을때 a[2]=2이므로 고정점은 2가 됩니다.
+
+
 def binary_search(arr,start,end):
     if start>end:
         return None

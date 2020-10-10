@@ -31,6 +31,7 @@ while time<t:
         if arr[i][0]==-1:
             ro1=i                 #공기청정기 찾기
             break
+
     rotate_array=[[-2]*c for _ in range(r)]
     for y in range(1,c):
         rotate_array[0][y-1]=arr[0][y]
