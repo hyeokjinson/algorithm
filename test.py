@@ -1,2 +1,3 @@
-for i in range(0):
-    print(i)
+for i in range(100):
+    s=input()
+    print(s)
