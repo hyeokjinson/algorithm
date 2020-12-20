@@ -1,51 +1,65 @@
-import sys
+from _collections import deque
+dx=[-1,-1,0,1,1,1,0,-1]
+dy=[0,1,1,1,0,-1,-1,-1]
 
-input = sys.stdin.readline
+if __name__ == '__main__':
+    n,m,k=map(int,input().split())
+    arr=[[deque()for _ in range(n)]for _ in range(n)]
+    q=deque()
+    for _ in range(m):
+        r,c,m,s,d=map(int,input().split())
+        arr[r-1][c-1].append((m,s,d))
+        q.append((r-1,c-1))
 
-def move():
+    for _ in range(k):
+        temp=[]
+        qlen=len(q)
+
+        for _ in range(qlen):
+            x,y=q.popleft()
+            for _ in range(len(arr[x][y])):
+                m,s,d=arr[x][y].popleft()
+                nx = (s * dx[d] + x) % n
+                ny = (s * dy[d] + y) % n
+                q.append((nx,ny))
+                temp.append((nx,ny,m,s,d))
+
+        for x,y,m,s,d in temp:
+            arr[x][y].append((m,s,d))
+
+        for i in range(n):
+            for j in range(n):
+                if len(arr[i][j])>1:
+                    nm,ns,odd,even,flag=0,0,0,0,0
+                    for idx,(m,s,d) in enumerate(arr[i][j]):
+                        nm+=m
+                        ns+=s
+                        if idx==0:
+                            if d%2==0:
+                                even=1
+                            else:
+                                odd=1
+                        else:
+                            if even==1 and d%2==1:
+                                flag=1
+                            if odd==1 and d%2==0:
+                                flag=1
+
+                    nm//=5
+                    ns//=len(arr[i][j])
+                    arr[i][j]=deque()
+
+                    if nm!=0:
+                        for idx in range(4):
+                            if flag==0:
+                                nd=2*idx
+                            else:
+                                nd=2*idx+1
+                            arr[i][j].append((nm,ns,nd))
+    res=0
     for i in range(n):
-        num = i
-        for j in range(h):
-            if a[num][j]:
-                num += 1
-            elif a[num-1][j]:
-                num -= 1
-        if i != num:
-            return 0
-    return 1
-
-
-def dfs(cnt, idx, r):
-    global ans
-    if cnt == r:
-        if move():
-            ans = cnt
-        return
-
-    for i in range(idx, h):
-        for j in range(n-1):
-            if a[j][i]:
-                continue
-            if j - 1 >= 0 and a[j-1][i]:
-                continue
-            if j + 1 < n and a[j+1][i]:
-                continue
-            a[j][i] = 1
-            dfs(cnt + 1, i, r)
-            a[j][i] = 0
-
-n, m, h = map(int, input().split())
-a = [[0]*h for _ in range(n)]
-for _ in range(m):
-    x, y = map(int, input().split())
-    a[y-1][x-1] = 1
-
-ans, flag = sys.maxsize, 1
-for r in range(4):
-    dfs(0, 0, r)
-    if ans != sys.maxsize:
-        print(ans)
-        flag = 0
-        break
-if flag:
-    print(-1)
+        for j in range(n):
+            if arr[i][j]:
+                for m,s,d in arr[i][j]:
+                    res+=m
+    print(res)
