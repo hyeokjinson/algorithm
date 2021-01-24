@@ -1,0 +1,44 @@
+from collections import deque
+dx=[1,-1,0,0,0,0]
+dy=[0,0,1,-1,0,0]
+dz=[0,0,0,0,1,-1]
+
+def bfs(x,y,z):
+    q.append((x,y,z))
+    check[x][y][z]=1
+
+    while q:
+        x,y,z=q.popleft()
+
+        for i in range(6):
+            nx=x+dx[i]
+            ny=y+dy[i]
+            nz=z+dz[i]
+
+            if 0<=nx<l and 0<=ny<r and 0<=nz<c:
+                if arr[nx][ny][nz]=='E':
+                    print("Escaped in %d minute(s)." %check[x][y][z])
+                    return
+                if arr[nx][ny][nz]=='.' and check[nx][ny][nz]==0:
+                    check[nx][ny][nz]=check[x][y][z]+1
+                    q.append((nx,ny,nz))
+    print("Trapped!")
+
+if __name__ == '__main__':
+
+    while True:
+        l,r,c=map(int,input().split())
+        if l==0 and r==0 and c==0:
+            break
+        arr=[[[]*c for _ in range(r)]for _ in range(l)]
+        check=[[[0]*c for _ in range(r)]for _ in range(l)]
+        q=deque()
+
+        for i in range(l):
+            arr[i]=[list(map(str,input().strip()))for _ in range(r)]
+            input()
+        for i in range(l):
+            for j in range(r):
+                for k in range(c):
+                    if arr[i][j][k]=='S':
+                        bfs(i,j,k)
