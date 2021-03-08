@@ -1,39 +1,41 @@
-def dfs(x,y,d):
-    global cnt
-    arr[x][y]=2
-    while True:
-        for i in range(4):
-            res=False
-            dd=(d+3)%4
-            nx=x+dx[dd]
-            ny=y+dy[dd]
-            d=dd
-            if 0<=nx<n and 0<=ny<m:
-                if arr[nx][ny]==0:
-                    arr[nx][ny]=2
-                    cnt+=1
-                    res=True
-                    x=nx
-                    y=ny
-                    break
+from collections import deque
 
-        if not res:
-            if arr[x-dx[d]][y-dy[d]]==1:
-                return
-            else:
-                x=x-dx[d]
-                y=y-dy[d]
+def left(num,direction):
+    if num<0:
+        return
+    if arr[num][2]!=arr[num+1][6]:
+        left(num-1,-direction)
+        arr[num].rotate(direction)
 
-
-
+def right(num,direction):
+    if num>=4:
+        return
+    if arr[num][6]!=arr[num-1][2]:
+        right(num+1,-direction)
+        arr[num].rotate(direction)
 
 
 if __name__ == '__main__':
-    dx=[-1,0,1,0]
-    dy=[0,1,0,-1]
-    n,m=map(int,input().split())
-    r,c,d=map(int,input().split())
-    arr=[list(map(int,input().split()))for _ in range(n)]
-    cnt=1
-    dfs(r,c,d)
-    print(cnt)
+    arr=[]
+
+    for i in range(4):
+        arr.append(deque(list(input())))
+
+    k=int(input())
+
+    for _ in range(k):
+        number,direction=map(int,input().split())
+        number-=1
+        left(number-1,-direction)
+        right(number+1,-direction)
+        arr[number].rotate(direction)
+    res=0
+    if arr[0][0]=='1':
+        res+=1
+    if arr[1][0]=='1':
+        res+=2
+    if arr[2][0]=='1':
+        res+=4
+    if arr[3][0]=='1':
+        res+=8
+    print(res)
