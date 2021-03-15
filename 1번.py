@@ -1,19 +1,26 @@
-from _collections import deque
-matrix=[list(map(int,input().split()))for _ in range(5)]
-moves=list(map(int,input().split()))
-result=[]
-cnt=0
-while moves:
-    node=moves.pop(0)
-    if len(result)==0:
-        result.append(matrix[node-1].pop())
-        continue
-    print(result)
-    if result[-1]==matrix[node-1][-1]:
-        result.pop()
-        matrix[node-1].pop()
-        cnt+=1
-    else:
-        result.append(matrix[node-1].pop())
+def solve(s):
+    mod = 10 ** 9 + 7
 
-print(cnt)
+    s1 = s.count('1')
+    if s1 % 3:
+        return 0
+    s1 //= 3
+
+    if s1 == 0:
+        return (len(s) - 1) * (len(s) - 2) // 2 % mod
+
+    cnt = lt = rt = 0
+
+    for x in s:
+        if x == '1':
+            cnt += 1
+        if cnt == s1:
+            lt += 1
+        elif cnt == 2 * s1:
+            rt += 1
+    return lt * rt % mod
+
+
+s = input()
+
+print(solve(s))
