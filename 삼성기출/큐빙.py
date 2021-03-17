@@ -15,7 +15,8 @@ if __name__ == '__main__':
         s=list(input().split())
 
         for area,dir in s:
-            rotate(area)
+            rotate(area,dir)
+            rotate2()
 
             if dir=='-':
                 rotate(area)

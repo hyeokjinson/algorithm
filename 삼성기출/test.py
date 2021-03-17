@@ -1,41 +1,54 @@
 from collections import deque
+dx=[1,0,-1,0]
+dy=[0,1,0,-1]
+def bfs(x,y):
+    q=deque([(x,y)])
 
-def left(num,direction):
-    if num<0:
-        return
-    if arr[num][2]!=arr[num+1][6]:
-        left(num-1,-direction)
-        arr[num].rotate(direction)
+    visit=set([(x,y)])
+    ans=0
+    eat_flag=False
+    shark=2
+    eat = 0
+    time=0
+    while q:
+        size=len(q)
+        q=deque(sorted(q))
+        for _ in range(size):
+            x,y=q.popleft()
 
-def right(num,direction):
-    if num>=4:
-        return
-    if arr[num][6]!=arr[num-1][2]:
-        right(num+1,-direction)
-        arr[num].rotate(direction)
+            if arr[x][y]!=0 and arr[x][y]<shark:
+                eat+=1
+                arr[x][y]=0
+
+                if eat==shark:
+                    shark+=1
+                    eat=0
+                q=deque()
+                visit=set([(x,y)])
+                ans=time
+                eat_flag=True
+            for i in range(4):
+                nx=x+dx[i]
+                ny=y+dy[i]
+                if 0<=nx<n and 0<=ny<n and (nx,ny) not in visit:
+                    if arr[nx][ny]<=shark:
+                        q.append((nx,ny))
+                        visit.add((nx,ny))
+            if eat_flag:
+                eat_flag=False
+                break
+        time+=1
+    return ans
 
 
 if __name__ == '__main__':
-    arr=[]
+    n=int(input())
+    arr=[list(map(int,input().split()))for _ in range(n)]
 
-    for i in range(4):
-        arr.append(deque(list(input())))
+    for i in range(n):
+        for j in range(n):
+            if arr[i][j]==9:
+                s_x,s_y=i,j
+                arr[i][j]=0
 
-    k=int(input())
-
-    for _ in range(k):
-        number,direction=map(int,input().split())
-        number-=1
-        left(number-1,-direction)
-        right(number+1,-direction)
-        arr[number].rotate(direction)
-    res=0
-    if arr[0][0]=='1':
-        res+=1
-    if arr[1][0]=='1':
-        res+=2
-    if arr[2][0]=='1':
-        res+=4
-    if arr[3][0]=='1':
-        res+=8
-    print(res)
+    print(bfs(s_x,s_y))
