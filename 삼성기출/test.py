@@ -1,54 +1,76 @@
 from collections import deque
-dx=[1,0,-1,0]
-dy=[0,1,0,-1]
-def bfs(x,y):
-    q=deque([(x,y)])
+from copy import deepcopy
 
-    visit=set([(x,y)])
-    ans=0
-    eat_flag=False
-    shark=2
-    eat = 0
-    time=0
+def result_check(arr):
+    for i in range(len(arr)):
+        for j in range(len(arr[0])):
+            if arr[i][j]==0:
+                return -1
+    return 0
+
+def bfs(start):
+    arr=deepcopy(maps)
+    dx=[1,0,-1,0]
+    dy=[0,-1,0,1]
+    q=deque()
+    q.extend(start)
+    visited=[[0 for _ in range(n)]for _ in range(n)]
+    last_cnt=0
+
     while q:
-        size=len(q)
-        q=deque(sorted(q))
-        for _ in range(size):
-            x,y=q.popleft()
+        x,y,cnt=q.popleft()
+        visited[x][y]=1
+        for i in range(4):
+            nx=x+dx[i]
+            ny=y+dy[i]
 
-            if arr[x][y]!=0 and arr[x][y]<shark:
-                eat+=1
-                arr[x][y]=0
+            if 0<=nx<n and 0<=ny<n and arr[nx][ny]!=1 and visited[nx][ny]!=1:
+                visited[nx][ny]=1
+                if arr[nx][ny]==0:
+                    arr[nx][ny]=2
+                    last_cnt=cnt+1
+                q.append((nx,ny,cnt+1))
+    if result_check(arr)==0:
+        return last_cnt
+    else:
+        return -1
 
-                if eat==shark:
-                    shark+=1
-                    eat=0
-                q=deque()
-                visit=set([(x,y)])
-                ans=time
-                eat_flag=True
-            for i in range(4):
-                nx=x+dx[i]
-                ny=y+dy[i]
-                if 0<=nx<n and 0<=ny<n and (nx,ny) not in visit:
-                    if arr[nx][ny]<=shark:
-                        q.append((nx,ny))
-                        visit.add((nx,ny))
-            if eat_flag:
-                eat_flag=False
-                break
-        time+=1
-    return ans
+
+
+
+
+
+def combination(L,s):
+    global min_
+    if L==m:
+        res=[]
+        for i in cb:
+            res.append(start[i])
+        result=bfs(res)
+        if min_>=result and result!=-1:
+            min_=result
+    else:
+        for i in range(s,len(start)):
+            cb[L]=i
+            combination(L+1,i+1)
 
 
 if __name__ == '__main__':
-    n=int(input())
-    arr=[list(map(int,input().split()))for _ in range(n)]
+    n,m=map(int,input().split())
+    maps=[list(map(int,input().split()))for _ in range(n)]
+    start=[]
+    cb=[0]*m
+    min_=2147000000
 
     for i in range(n):
         for j in range(n):
-            if arr[i][j]==9:
-                s_x,s_y=i,j
-                arr[i][j]=0
+            if maps[i][j]==2:
+                start.append((i,j,0))
 
-    print(bfs(s_x,s_y))
+    combination(0,0)
+
+    if min_==2147000000:
+        print(-1)
+    else:
+        print(min_)
+
