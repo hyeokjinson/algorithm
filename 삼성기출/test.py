@@ -1,76 +1,54 @@
-from collections import deque
-from copy import deepcopy
+def solution(x,y,d1,d2,n,arr):
+    area=[0 for _ in range(5)]
+    maps=[[0 for _ in range(n)]for _ in range(n)]
 
-def result_check(arr):
-    for i in range(len(arr)):
-        for j in range(len(arr[0])):
-            if arr[i][j]==0:
-                return -1
-    return 0
+    for i in range(d1+1):
+        maps[x+i][y-i]=5
+        maps[x+d2+i][y+d2-i]=5
+    for i in range(d2+1):
+        maps[x+i][y+i]=5
+        maps[x+d1+i][y-d1+i]=5
 
-def bfs(start):
-    arr=deepcopy(maps)
-    dx=[1,0,-1,0]
-    dy=[0,-1,0,1]
-    q=deque()
-    q.extend(start)
-    visited=[[0 for _ in range(n)]for _ in range(n)]
-    last_cnt=0
-
-    while q:
-        x,y,cnt=q.popleft()
-        visited[x][y]=1
-        for i in range(4):
-            nx=x+dx[i]
-            ny=y+dy[i]
-
-            if 0<=nx<n and 0<=ny<n and arr[nx][ny]!=1 and visited[nx][ny]!=1:
-                visited[nx][ny]=1
-                if arr[nx][ny]==0:
-                    arr[nx][ny]=2
-                    last_cnt=cnt+1
-                q.append((nx,ny,cnt+1))
-    if result_check(arr)==0:
-        return last_cnt
-    else:
-        return -1
-
-
-
-
-
-
-def combination(L,s):
-    global min_
-    if L==m:
-        res=[]
-        for i in cb:
-            res.append(start[i])
-        result=bfs(res)
-        if min_>=result and result!=-1:
-            min_=result
-    else:
-        for i in range(s,len(start)):
-            cb[L]=i
-            combination(L+1,i+1)
-
-
-if __name__ == '__main__':
-    n,m=map(int,input().split())
-    maps=[list(map(int,input().split()))for _ in range(n)]
-    start=[]
-    cb=[0]*m
-    min_=2147000000
-
+    for i in range(d1):
+        k=1
+        while (maps[x+i+k][y-i]!=5):
+            maps[x+i+k][y-i]=5
+            k+=1
+    for i in range(d2):
+        k=1
+        while (maps[x+i+k][y+i]!=5):
+            maps[x+i+k][y+i]=5
+            k+=1
     for i in range(n):
         for j in range(n):
-            if maps[i][j]==2:
-                start.append((i,j,0))
+            if i < x + d1 and j <= y and maps[i][j] == 0:
+                maps[i][j]=1
+            elif i <= x + d2 and j > y and maps[i][j] == 0:
+                maps[i][j]=2
+            elif x + d1 <= i and j < y - d1 + d2 and maps[i][j] == 0:
+                maps[i][j]=3
+            elif i > x + d2 and j >= -d1 + d2 and maps[i][j] == 0:
+                maps[i][j]=4
+    for i in range(n):
+        for j in range(n):
+            area[maps[i][j]-1]+=arr[i][j]
+    return (max(area)-min(area))
 
-    combination(0,0)
+if __name__ == '__main__':
+    n=int(input())
+    arr=[list(map(int,input().split()))for _ in range(n)]
+    ans=-1
 
-    if min_==2147000000:
-        print(-1)
-    else:
-        print(min_)
-
+    for i in range(n-2):
+        for j in range(1,n-1):
+            for k in range(1,j+1):
+                for s in range(1,n-1-i-k):
+                    try:
+                        sub=solution(i,j,k,s,n,arr)
+                        if ans==-1:
+                            ans=sub
+                        elif ans>sub:
+                            ans=sub
+                    except:
+                        continue
+    print(ans)
